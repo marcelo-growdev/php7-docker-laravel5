@@ -30,6 +30,10 @@ services:
       - MYSQL_DATABASE=laravel
     networks:
       - laravel
+    volumes:
+      - dbdata:/var/lib/mysql
+volumes:
+  dbdata:
 networks:
   laravel:
     driver: bridge
