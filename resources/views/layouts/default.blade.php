@@ -77,18 +77,12 @@
                 </div>
             </div>
         </nav>
-        <div class="container-fluid">
-            <div class="row  py-4">
-                <div class="col-2" style="">
-                    <div class="card" style="width: 18rem;">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><a href="{{ route('products.index') }}">Produtos</a></li>
-                            <li class="list-group-item"><a href="{{ route('categories.index') }}">Categorias</a></li>
-                            <li class="list-group-item">A third item</li>
-                        </ul>
-                    </div>
+        <div class="container">
+            <div class="row py-4">
+                <div class="col-12 col-md-2">
+                    @include('components.navMenu')
                 </div>
-                <main class="col-10">
+                <main class="col-12 col-md-10">
                     @yield('content')
                 </main>
             </div>
