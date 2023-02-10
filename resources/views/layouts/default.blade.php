@@ -83,7 +83,7 @@
                     <div class="card" style="width: 18rem;">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item"><a href="{{ route('products.index') }}">Produtos</a></li>
-                            <li class="list-group-item">A second item</li>
+                            <li class="list-group-item"><a href="{{ route('categories.index') }}">Categorias</a></li>
                             <li class="list-group-item">A third item</li>
                         </ul>
                     </div>
