@@ -11,9 +11,6 @@
 |
 */
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -21,4 +18,5 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::resource('products', 'ProductController');
+Route::resource('products', 'ProductController')->middleware('auth');
+Route::resource('categories', 'CategoryController')->middleware('auth');
