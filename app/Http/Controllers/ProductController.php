@@ -15,7 +15,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
-        return $products->jsonSerialize();
+        return view('products.index', ['products' => $products]);
     }
 
     /**
@@ -25,7 +25,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('products.create');
     }
 
     /**
@@ -36,7 +36,10 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string']);
+        $product = new Product($validadeInputs);
+        $product->save();
+        return redirect('/products');
     }
 
     /**
@@ -58,7 +61,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+
+        return view('products.edit', ['product' => $product]);
     }
 
     /**
@@ -70,7 +74,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string']);
+        $product->title = $validadeInputs['title'];
+        $product->description = $validadeInputs['description'];
+        $product->price = $validadeInputs['price'];
+        $product->saveOrFail();
+        return redirect('/products');
     }
 
     /**
@@ -81,6 +90,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect()->back();
     }
 }

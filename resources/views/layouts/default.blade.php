@@ -77,10 +77,25 @@
                 </div>
             </div>
         </nav>
-        <main class="py-4">
-            @yield('content')
-        </main>
+        <div class="container-fluid">
+            <div class="row  py-4">
+                <div class="col-2" style="">
+                    <div class="card" style="width: 18rem;">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="{{ route('products.index') }}">Produtos</a></li>
+                            <li class="list-group-item">A second item</li>
+                            <li class="list-group-item">A third item</li>
+                        </ul>
+                    </div>
+                </div>
+                <main class="col-10">
+                    @yield('content')
+                </main>
+            </div>
+        </div>
+
     </div>
+    @yield('scripts')
 </body>
 
 </html>
