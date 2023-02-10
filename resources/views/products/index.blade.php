@@ -16,6 +16,7 @@
                     <thead>
                         <th>Título</th>
                         <th>Descrição</th>
+                        <th>Categoria</th>
                         <th>Valor</th>
                         <th>Ação</th>
                     </thead>
@@ -24,6 +25,7 @@
                             <tr>
                                 <td>{{ $product->title }}</td>
                                 <td>{{ $product->description }}</td>
+                                <td>{{ $product->category->name }}</td>
                                 <td>R$ {{ $product->price }}</td>
                                 <td><a href="{{ route('products.edit', $product) }}">Editar</a> | <form
                                         action="{{ route('products.destroy', $product) }}" method="post"

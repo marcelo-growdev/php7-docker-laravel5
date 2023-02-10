@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        $categories = Category::all();
+        return view('products.create', ['categories' => $categories]);
     }
 
     /**
@@ -36,8 +38,10 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string']);
+        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string', 'category' => 'required']);
         $product = new Product($validadeInputs);
+        $category = Category::find($validadeInputs['category']);
+        $product->category()->associate($category);
         $product->save();
         return redirect('/products');
     }
@@ -61,8 +65,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-
-        return view('products.edit', ['product' => $product]);
+        $categories = Category::all();
+        return view('products.edit', ['product' => $product, 'categories' => $categories]);
     }
 
     /**
@@ -74,10 +78,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string']);
+        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string', 'category' => 'required']);
         $product->title = $validadeInputs['title'];
         $product->description = $validadeInputs['description'];
         $product->price = $validadeInputs['price'];
+        $category = Category::find($validadeInputs['category']);
+        $product->category()->associate($category);
         $product->saveOrFail();
         return redirect('/products');
     }

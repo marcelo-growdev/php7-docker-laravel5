@@ -35,6 +35,14 @@
                         @endif
                     </div>
                     <div class="form-group">
+                        <label for="category">Categoria</label>
+                        <select class="form-control" name="category" id="category">
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="price">Preço</label>
                         <input type="number" class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
                             name="price" id="price" value="{{ old('price') }}" maxlength="6">
