@@ -1,4 +1,4 @@
-<div class="card mx-auto" style="max-width: 18rem;">
+<div class="card mx-auto" style="min-width: 10rem;max-width: 18rem;">
     <ul class="list-group list-group-flush">
         @component('components.navMenuItem', ['route' => 'home'])
             Home

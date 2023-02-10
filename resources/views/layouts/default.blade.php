@@ -79,10 +79,10 @@
         </nav>
         <div class="container">
             <div class="row py-4">
-                <div class="col-12 col-md-2">
+                <div class="col-12 col-md-2 mb-4 mb-md-0">
                     @include('components.navMenu')
                 </div>
-                <main class="col-12 col-md-10">
+                <main class="col-12 col-md-10 px-0">
                     @yield('content')
                 </main>
             </div>
