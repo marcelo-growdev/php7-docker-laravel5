@@ -44,12 +44,3 @@
         </div>
     </div>
 @endsection
-
-@section('scripts')
-    <script type="text/javascript">
-        function handleDeleteClick(id) {
-            const form = document.getElementById(`deleteForm${id}`);
-            return confirm('Deseja deletar esse registro?') ? form.submit() : null;
-        }
-    </script>
-@endsection
