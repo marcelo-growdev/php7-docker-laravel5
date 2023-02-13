@@ -47,7 +47,8 @@
                     <div class="form-group">
                         <label for="price">Preço</label>
                         <input type="number" class="form-control{{ $errors->has('price') ? ' is-invalid' : '' }}"
-                            name="price" id="price" value="{{ old('price') ?? $product->getPrice() }}">
+                            name="price" id="price" value="{{ old('price') ?? $product->getPrice() }}"
+                            step="0.01">
                         @if ($errors->has('price'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('price') }}</strong>

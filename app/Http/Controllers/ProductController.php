@@ -82,7 +82,7 @@ class ProductController extends Controller
         $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|numeric', 'category' => 'required']);
         $product->title = $validadeInputs['title'];
         $product->description = $validadeInputs['description'];
-        $product->price = $validadeInputs['price'];
+        $product->setPrice($validadeInputs['price']);
         $category = Category::find($validadeInputs['category']);
         $product->category()->associate($category);
         $product->saveOrFail();
@@ -99,5 +99,9 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->back();
+    }
+
+    public function getProductsByTitle(Request $request) {
+
     }
 }
