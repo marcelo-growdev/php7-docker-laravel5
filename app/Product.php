@@ -15,7 +15,10 @@ class Product extends Model
     }
 
     public function getPrice() {
-        return 'R$ ' . number_format($this->price / 100, 2, ',', '.');
+        return $this->price / 100;
+    }
+    public function getPriceFormatted() {
+        return 'R$' . number_format($this->price / 100, 2, ',', '.');
     }
     public function setPrice($price) {
         $this->price = round($price * 100);
