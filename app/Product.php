@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
-        'title', 'description', 'price',
+        'title', 'description',
     ];
 
     public function category() {
@@ -15,9 +15,9 @@ class Product extends Model
     }
 
     public function getPrice() {
-        return $this->price / 100;
+        return 'R$ ' . number_format($this->price / 100, 2, ',', '.');
     }
-    public function setPrice() {
-        return round($this->price * 100);
+    public function setPrice($price) {
+        $this->price = round($price * 100);
     }
 }

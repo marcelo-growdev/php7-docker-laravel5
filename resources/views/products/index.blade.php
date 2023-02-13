@@ -26,7 +26,7 @@
                                 <td>{{ $product->title }}</td>
                                 <td>{{ $product->description }}</td>
                                 <td>{{ $product->category->name }}</td>
-                                <td>R$ {{ $product->price }}</td>
+                                <td>{{ $product->getPrice() }}</td>
                                 <td class="d-flex"><a href="{{ route('products.edit', $product) }}">Editar</a>
                                     <span class="mx-1">|</span>
                                     <form action="{{ route('products.destroy', $product) }}" method="post"
