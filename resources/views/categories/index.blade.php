@@ -16,14 +16,14 @@
                 <table class="table table-striped">
                     <thead>
                         <th>Nome</th>
-                        <th>Ação</th>
+                        <th class="fit text-center">Ação</th>
                     </thead>
                     <tbody>
                         @foreach ($categories as $category)
                             <tr>
                                 <td>{{ $category->name }}</td>
-                                <td class="d-flex flex-collunm"><a href="{{ route('categories.edit', $category) }}">Editar</a>
-                                    <span class="mx-2">|</span>
+                                <td class="d-flex"><a href="{{ route('categories.edit', $category) }}">Editar</a>
+                                    <span class="mx-1">|</span>
                                     <form action="{{ route('categories.destroy', $category) }}" method="post"
                                         id="deleteForm{{ $category->id }}">
                                         @csrf
