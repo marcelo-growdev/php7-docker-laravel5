@@ -20,7 +20,6 @@ class CreateOrdersProductsTable extends Migration
             $table->integer('product_id')->unsigned()->nullable();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('SET NULL');
             $table->string('title');
-            $table->string('description')->nullable();
             $table->integer('quantity');
             $table->integer('price');
         });
