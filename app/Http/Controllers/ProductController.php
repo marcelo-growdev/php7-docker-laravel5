@@ -38,7 +38,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string', 'category' => 'required']);
+        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|digits_between:1,8|numeric', 'category' => 'required']);
         $product = new Product($validadeInputs);
         $category = Category::find($validadeInputs['category']);
         $product->category()->associate($category);
@@ -78,7 +78,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string', 'category' => 'required']);
+        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|digits_between:1,8|numeric', 'category' => 'required']);
         $product->title = $validadeInputs['title'];
         $product->description = $validadeInputs['description'];
         $product->price = $validadeInputs['price'];
