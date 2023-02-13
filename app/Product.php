@@ -13,4 +13,11 @@ class Product extends Model
     public function category() {
         return $this->belongsTo('App\Category');
     }
+
+    public function getPrice() {
+        return $this->price / 100;
+    }
+    public function setPrice() {
+        return round($this->price * 100);
+    }
 }
