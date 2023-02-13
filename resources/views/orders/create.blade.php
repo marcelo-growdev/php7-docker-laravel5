@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <label for="client">Cliente</label>
                         <input type="text" class="form-control{{ $errors->has('client') ? ' is-invalid' : '' }}"
-                            name="client" id="client" value="{{ old('client') }}" placeholder="João Silva">
+                            name="client" id="client" value="{{ old('client') }}" placeholder="Ex. João Silva...">
                         @if ($errors->has('client'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('client') }}</strong>
@@ -27,7 +27,8 @@
                     <div class="form-group">
                         <label for="description">Descrição</label>
                         <input type="text" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}"
-                            name="description" id="description" value="{{ old('description') }}">
+                            name="description" id="description" value="{{ old('description') }}"
+                            placeholder="Ex. Pedido recebido por email...">
                         @if ($errors->has('description'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('description') }}</strong>
@@ -83,6 +84,39 @@
                         <tbody id="productsTable" class="border">
                         </tbody>
                     </table>
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="subTotal">Sub-Total</label>
+                            <input type="number" class="form-control" onload="refreshSubTotal()" id="subTotal" disabled>
+                        </div>
+                        <div class="col-4">
+                            <label for="discount">Desconto</label>
+                            <input type="number" class="form-control{{ $errors->has('discount') ? ' is-invalid' : '' }}"
+                                name="discount" id="discount" value="{{ old('discount') ?? 0 }}" step="0.01"
+                                min="0" onChange="refreshTotal()">
+                            @if ($errors->has('discount'))
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $errors->first('discount') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                        <div class="col-4">
+                            <label for="addition">Acréscimo</label>
+                            <input type="number" class="form-control{{ $errors->has('addition') ? ' is-invalid' : '' }}"
+                                name="addition" id="addition" value="{{ old('addition') ?? 0 }}" step="0.01"
+                                min="0" onChange="refreshTotal()">
+                            @if ($errors->has('addition'))
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $errors->first('addition') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-4 align-items-baseline">
+                        <p class="mr-2">Valor total do pedido:</p>
+                        <p class="h4">R$ <span id="totalOrder" onload="refreshTotal()">0,00</span>
+                        </p>
+                    </div>
                     <div class="d-flex justify-content-end mt-4"><button type="reset"
                             class="btn btn-secondary mr-2">Limpar</button>
                         <button type="submit" class="btn btn-primary">Cadastrar</button>
@@ -122,18 +156,19 @@
             newTr.id = randomId;
             newTr.innerHTML = `<input type="hidden" value="${productSelector.value}" name="product_id[]" disabled>
                                 <td><input type="text" step="1" class="form-control text-center" value="${quantitySelector.value}"
-                                        name="product_quantity[]"
+                                        name="product_quantity[]" id="${randomId}_productQuantity" onChange="updateProductTotal(${randomId})"
                                         onkeypress="return event.charCode >= 48 && event.charCode <=57" required></td>
                                 <td><input type="text" class="form-control" name="product_title[]" value="${productSelector.options[productSelector.selectedIndex].text}"></td>
                                 <td><input type="number" step="0.01" class="form-control text-center" value="${priceSelector.value}"
-                                        name="product_price[]" required></td>
-                                <td><input type="text" class="form-control text-center" value="${Math.round(priceSelector.value * quantitySelector.value * 100) / 100}"
-                                        disabled>
+                                        name="product_price[]" id="${randomId}_productPrice" onChange="updateProductTotal(${randomId})" required></td>
+                                <td><input type="text" class="form-control text-center totalCounter" value="${Math.round(priceSelector.value * quantitySelector.value * 100) / 100}"
+                                        disabled id="${randomId}_productTotal">
                                 </td>
                                 <td class="align-middle"><a href="#" onClick="removeProduct(${randomId})"
                                         class="text-danger">Apagar</a></td>`;
             productsTable.appendChild(newTr);
             clearAddProduct();
+            refreshSubTotal()
         }
 
         function getRandomId() {
@@ -144,6 +179,36 @@
             const productsTable = document.getElementById('productsTable');
             const getTr = document.getElementById(id);
             getTr.remove();
+            refreshSubTotal()
+        }
+
+        function updateProductTotal(id) {
+            const productTotalInput = document.getElementById(`${id}_productTotal`);
+            const productQuantityInput = document.getElementById(`${id}_productQuantity`);
+            const productPriceInput = document.getElementById(`${id}_productPrice`);
+            productTotalInput.value = Math.round(productPriceInput.value * productQuantityInput.value * 100) / 100;
+            refreshSubTotal()
+        }
+
+        function getSubTotal() {
+            const subProductsInput = document.querySelectorAll("input.totalCounter");
+            let subtotal = [...subProductsInput].reduce((acc, actual) => Number(actual.value) + acc, 0);
+            return subtotal;
+        }
+
+        function refreshSubTotal() {
+            const subTotalInput = document.getElementById('subTotal');
+            subTotalInput.value = getSubTotal();
+            refreshTotal();
+        }
+
+        function refreshTotal() {
+            const subTotalInput = document.getElementById('subTotal');
+            const discountInput = document.getElementById('discount');
+            const additionInput = document.getElementById('addition');
+            const totalOrderText = document.getElementById('totalOrder');
+            totalOrderText.innerText = Math.round((Number(subTotalInput.value) - Number(discountInput.value) + Number(
+                additionInput.value)) * 100) / 100;
         }
     </script>
 @endsection
