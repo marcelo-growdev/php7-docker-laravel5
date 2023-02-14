@@ -38,8 +38,9 @@
                     <div class="form-group">
                         <label for="status">Status</label>
                         <select class="form-control" name="status" id="status">
-                            <option value="Orçamento" selected>Orçamento</option>
-                            <option value="Venda">Venda</option>
+                            <option value="Orçamento" {{ old('status') === 'Orçamento' ? 'selected' : null }}>Orçamento
+                            </option>
+                            <option value="Venda" {{ old('status') === 'Venda' ? 'selected' : null }}>Venda</option>
                         </select>
                     </div>
                     <fieldset class="form-group border p-2" id="addProductToOrder">
@@ -85,7 +86,13 @@
                         </thead>
                         <tbody id="productsTable" class="border">
                         </tbody>
+
                     </table>
+                    @if ($errors->has('product_id'))
+                        <div class="alert alert-danger" role="alert">
+                            Você deve adicionar pelo menos um produto ao pedido.
+                        </div>
+                    @endif
                     <div class="row">
                         <div class="col-4">
                             <label for="subTotal">Sub-Total</label>
