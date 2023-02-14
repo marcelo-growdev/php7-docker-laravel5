@@ -50,7 +50,6 @@ class OrderController extends Controller
             'product_price' => 'required|min:1',
             'product_quantity' => 'required|min:1',
         ]);
-        // return $validated;
         $order = new Order([
             'client' => $validated['client'],
             'description' => $validated['description'],
@@ -72,48 +71,51 @@ class OrderController extends Controller
         return redirect()->route('orders.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $category)
+    public function show(Order $order)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Order $category)
+
+    public function edit(Order $order)
     {
-        return view('orders.edit', ['order' => $order]);
+        $products = Product::all();
+        return view('orders.edit', ['order' => $order, 'products' => $products]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Order $category)
+    public function update(Request $request, Order $order)
     {
-        //
+        $validated = $request->validate([
+            'client' => 'required|max:255',
+            'description' => 'nullable|max:255',
+            'status' => 'required',
+            'discount' => 'numeric|min:0',
+            'addition' => 'numeric|min:0',
+            'product_id' => 'required|min:1',
+            'product_title' => 'required|min:1',
+            'product_price' => 'required|min:1',
+            'product_quantity' => 'required|min:1',
+        ]);
+        $order->client = $validated['client'];
+        $order->description = $validated['description'];
+        $order->status = $validated['status'];
+        $order->setDiscount($validated['discount']);
+        $order->setAddition($validated['addition']);
+        $order->products()->detach();
+        for($i=0; $i < count($validated['product_id']); $i++) {
+            $order->products()->attach($validated['product_id'][$i], [
+                'title' => $validated['product_title'][$i],
+                'quantity' => $validated['product_quantity'][$i],
+                'price' => $validated['product_price'][$i] * 100,
+            ]);
+        }
+        $order->save();
+        return redirect()->route('orders.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $category)
+    public function destroy(Order $order)
     {
-        //
+        $order->delete();
+        return redirect()->back();
     }
 }

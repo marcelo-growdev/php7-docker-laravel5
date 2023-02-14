@@ -6,18 +6,20 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">
-                    <span>Cadastrar novo pedido</span>
+                    <span>Editar pedido</span>
                     <a class="" href="{{ route('orders.index') }}" role="button">Voltar a listagem</a>
                 </div>
             </div>
 
             <div class="card-body">
-                <form action="{{ route('orders.store') }}" method="post">
+                <form action="{{ route('orders.update', $order) }}" method="post">
                     @csrf
+                    @method('put')
                     <div class="form-group">
                         <label for="client">Cliente</label>
                         <input type="text" class="form-control{{ $errors->has('client') ? ' is-invalid' : '' }}"
-                            name="client" id="client" value="{{ old('client') }}" placeholder="Ex. João Silva...">
+                            name="client" id="client" value="{{ old('client') ?? $order->client }}"
+                            placeholder="Ex. João Silva...">
                         @if ($errors->has('client'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('client') }}</strong>
@@ -27,7 +29,7 @@
                     <div class="form-group">
                         <label for="description">Descrição</label>
                         <input type="text" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}"
-                            name="description" id="description" value="{{ old('description') }}"
+                            name="description" id="description" value="{{ old('description') ?? $order->description }}"
                             placeholder="Ex. Pedido recebido por email...">
                         @if ($errors->has('description'))
                             <span class="invalid-feedback" role="alert">
@@ -38,9 +40,13 @@
                     <div class="form-group">
                         <label for="status">Status</label>
                         <select class="form-control" name="status" id="status">
-                            <option value="Orçamento" {{ old('status') === 'Orçamento' ? 'selected' : null }}>Orçamento
+                            <option value="Orçamento"
+                                {{ old('status') === 'Orçamento' ? 'selected' : ($order->status === 'Orçamento' ? ' selected' : null) }}>
+                                Orçamento
                             </option>
-                            <option value="Venda" {{ old('status') === 'Venda' ? 'selected' : null }}>Venda</option>
+                            <option value="Venda"
+                                {{ old('status') === 'Venda' ? 'selected' : ($order->status === 'Venda' ? ' selected' : null) }}>
+                                Venda</option>
                         </select>
                     </div>
                     <fieldset class="form-group border p-2" id="addProductToOrder">
@@ -85,6 +91,31 @@
                             <th class="col-1"></th>
                         </thead>
                         <tbody id="productsTable" class="border">
+                            @foreach ($order->products as $product)
+                                <tr id="{{ $product->pivot->id }}">
+                                    <input type="hidden" value="{{ $product->id }}" name="product_id[]">
+                                    <td><input type="text" step="1" class="form-control text-center"
+                                            value="{{ $product->pivot->quantity }}" name="product_quantity[]"
+                                            id="{{ $product->pivot->id }}_productQuantity" min="0"
+                                            onChange="updateProductTotal({{ $product->pivot->id }})"
+                                            onkeypress="return event.charCode >= 48 && event.charCode <=57" required>
+                                    </td>
+                                    <td><input type="text" class="form-control" name="product_title[]"
+                                            value="{{ $product->pivot->title }}"></td>
+                                    <td><input type="number" step="0.01" class="form-control text-center"
+                                            value="{{ $product->pivot->price / 100 }}" name="product_price[]"
+                                            id="{{ $product->pivot->id }}_productPrice"
+                                            onChange="updateProductTotal({{ $product->pivot->id }})" min="0"
+                                            required></td>
+                                    <td><input type="text" class="form-control text-center totalCounter"
+                                            value="{{ ($product->pivot->price * $product->pivot->quantity) / 100 }}"
+                                            disabled id="{{ $product->pivot->id }}_productTotal">
+                                    </td>
+                                    <td class="align-middle"><a href="#"
+                                            onClick="removeProduct({{ $product->pivot->id }})"
+                                            class="text-danger">Apagar</a></td>
+                                </tr>
+                            @endforeach
                         </tbody>
 
                     </table>
@@ -96,13 +127,14 @@
                     <div class="row">
                         <div class="col-4">
                             <label for="subTotal">Sub-Total</label>
-                            <input type="number" class="form-control" onload="refreshSubTotal()" id="subTotal" disabled>
+                            <input type="number" class="form-control" onload="refreshSubTotal()" id="subTotal"
+                                value="{{ $order->getSubTotal(false) }}" disabled>
                         </div>
                         <div class="col-4">
                             <label for="discount">Desconto</label>
                             <input type="number" class="form-control{{ $errors->has('discount') ? ' is-invalid' : '' }}"
-                                name="discount" id="discount" value="{{ old('discount') ?? 0 }}" step="0.01"
-                                min="0" onChange="refreshTotal()">
+                                name="discount" id="discount" value="{{ old('discount') ?? $order->discount / 100 }}"
+                                step="0.01" min="0" onChange="refreshTotal()">
                             @if ($errors->has('discount'))
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $errors->first('discount') }}</strong>
@@ -112,8 +144,8 @@
                         <div class="col-4">
                             <label for="addition">Acréscimo</label>
                             <input type="number" class="form-control{{ $errors->has('addition') ? ' is-invalid' : '' }}"
-                                name="addition" id="addition" value="{{ old('addition') ?? 0 }}" step="0.01"
-                                min="0" onChange="refreshTotal()">
+                                name="addition" id="addition" value="{{ old('addition') ?? $order->addition / 100 }}"
+                                step="0.01" min="0" onChange="refreshTotal()">
                             @if ($errors->has('addition'))
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $errors->first('addition') }}</strong>
@@ -123,7 +155,8 @@
                     </div>
                     <div class="d-flex justify-content-end mt-4 align-items-baseline">
                         <p class="mr-2">Valor total do pedido:</p>
-                        <p class="h4">R$ <span id="totalOrder" onload="refreshTotal()">0,00</span>
+                        <p class="h4">R$ <span id="totalOrder"
+                                onload="refreshTotal()">{{ $order->getTotalPrice(false) }}</span>
                         </p>
                     </div>
                     <div class="d-flex justify-content-end mt-4"><button type="reset"
@@ -202,7 +235,7 @@
         function getSubTotal() {
             const subProductsInput = document.querySelectorAll("input.totalCounter");
             let subtotal = [...subProductsInput].reduce((acc, actual) => Number(actual.value) + acc, 0);
-            return subtotal;
+            return (subtotal * 100) / 100;
         }
 
         function refreshSubTotal() {

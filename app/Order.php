@@ -10,10 +10,10 @@ class Order extends Model
         'client', 'description', 'status'
     ];
 
-    private $totalPrice;
+    private $totalPrice, $subTotal;
 
     public function products() {
-        return $this->belongsToMany('App\Product')->withPivot('title', 'quantity', 'price');
+        return $this->belongsToMany('App\Product')->withPivot('id', 'title', 'quantity', 'price');
     }
 
     public function seller() {
@@ -33,11 +33,23 @@ class Order extends Model
         $this->addition = round($value * 100);
     }
 
-    public function getTotalPrice() {
+    public function getTotalPrice($formatted = true) {
         $this->totalPrice = $this->addition - $this->discount;
+        $this->totalPrice += $this->getSubTotal(false, false);
+        if($formatted) {
+            return 'R$ ' . number_format($this->totalPrice / 100, 2, ',', '.');
+        }
+        return $this->totalPrice / 100;
+    }
+
+    public function getSubTotal($formatted = true, $view = true) {
+        $this->subTotal = 0;
         $this->products->each(function ($product) {
-            $this->totalPrice += $product->pivot->quantity * $product->pivot->price;
+            $this->subTotal += $product->pivot->quantity * $product->pivot->price;
         });
-        return 'R$ ' . number_format($this->totalPrice / 100, 2, ',', '.');
+        if($formatted) {
+            return 'R$ ' . number_format($this->subTotal / 100, 2, ',', '.');
+        }
+        return $view ? $this->subTotal / 100 : $this->subTotal;
     }
 }

@@ -4,7 +4,7 @@
             Home
         @endcomponent
         @component('components.navMenuItem', ['route' => 'orders.index'])
-            Vendas
+            Pedidos
         @endcomponent
         @component('components.navMenuItem', ['route' => 'products.index'])
             Produtos

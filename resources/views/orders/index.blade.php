@@ -5,9 +5,9 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">
-                    <span>Vendas</span>
+                    <span>Pedidos</span>
                     <a href="{{ route('orders.create') }}" role="button">Criar
-                        nova venda</a>
+                        novo pedido</a>
                 </div>
             </div>
 
