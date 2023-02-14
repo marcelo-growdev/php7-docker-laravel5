@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewOrderEvent;
 use App\Order;
 use App\Product;
 use Illuminate\Http\Request;
@@ -48,8 +49,9 @@ class OrderController extends Controller
                 'price' => $validated['product_price'][$i] * 100,
             ]);
         }
-
         $order->save();
+
+        event(new NewOrderEvent($order));
         return redirect()->route('orders.index');
     }
 
