@@ -18,7 +18,7 @@
                         <th>Descrição</th>
                         <th>Categoria</th>
                         <th>Valor</th>
-                        <th>Ação</th>
+                        <th class="fit text-center">Ação</th>
                     </thead>
                     <tbody>
                         @foreach ($products as $product)
@@ -26,9 +26,10 @@
                                 <td>{{ $product->title }}</td>
                                 <td>{{ $product->description }}</td>
                                 <td>{{ $product->category->name }}</td>
-                                <td>R$ {{ $product->price }}</td>
-                                <td><a href="{{ route('products.edit', $product) }}">Editar</a> | <form
-                                        action="{{ route('products.destroy', $product) }}" method="post"
+                                <td>{{ $product->getPriceFormatted() }}</td>
+                                <td class="d-flex"><a href="{{ route('products.edit', $product) }}">Editar</a>
+                                    <span class="mx-1">|</span>
+                                    <form action="{{ route('products.destroy', $product) }}" method="post"
                                         id="deleteForm{{ $product->id }}">
                                         @csrf
                                         @method('delete')

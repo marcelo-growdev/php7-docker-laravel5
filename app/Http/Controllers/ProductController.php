@@ -38,12 +38,13 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string', 'category' => 'required']);
-        $product = new Product($validadeInputs);
+        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|numeric', 'category' => 'required']);
+        $product = new Product(['title' => $validadeInputs['title'], 'description' => $validadeInputs['description']]);
+        $product->setPrice($validadeInputs['price']);
         $category = Category::find($validadeInputs['category']);
         $product->category()->associate($category);
         $product->save();
-        return redirect('/products');
+        return redirect()->route('products.index');
     }
 
     /**
@@ -78,14 +79,14 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|string', 'category' => 'required']);
+        $validadeInputs = $request->validate(['title' => 'required|string|max:255', 'description' => 'string|max:255|nullable', 'price' => 'required|numeric', 'category' => 'required']);
         $product->title = $validadeInputs['title'];
         $product->description = $validadeInputs['description'];
-        $product->price = $validadeInputs['price'];
+        $product->setPrice($validadeInputs['price']);
         $category = Category::find($validadeInputs['category']);
         $product->category()->associate($category);
         $product->saveOrFail();
-        return redirect('/products');
+        return redirect()->route('products.index');
     }
 
     /**
@@ -98,5 +99,9 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->back();
+    }
+
+    public function getProductsByTitle(Request $request) {
+
     }
 }

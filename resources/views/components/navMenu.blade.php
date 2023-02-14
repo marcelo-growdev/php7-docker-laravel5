@@ -3,6 +3,9 @@
         @component('components.navMenuItem', ['route' => 'home'])
             Home
         @endcomponent
+        @component('components.navMenuItem', ['route' => 'orders.index'])
+            Pedidos
+        @endcomponent
         @component('components.navMenuItem', ['route' => 'products.index'])
             Produtos
         @endcomponent
