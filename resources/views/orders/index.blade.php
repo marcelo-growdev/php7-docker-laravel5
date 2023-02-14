@@ -23,10 +23,10 @@
                     <tbody>
                         @foreach ($orders as $order)
                             <tr>
-                                <td>{{ $order->title }}</td>
+                                <td>{{ $order->client }}</td>
                                 <td>{{ $order->status }}</td>
-                                <td>{{ $order->createdBy->name }}</td>
-                                <td>R$ 0,00</td>
+                                <td>{{ $order->seller->name }}</td>
+                                <td>{{ $order->getTotalPrice() }}</td>
                                 <td class="d-flex"><a href="{{ route('orders.edit', $order) }}">Editar</a>
                                     <span class="mx-1">|</span>
                                     <form action="{{ route('orders.destroy', $order) }}" method="post"

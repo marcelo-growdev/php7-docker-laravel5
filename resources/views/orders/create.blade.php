@@ -48,7 +48,8 @@
                             <div class="col-2">
                                 <label for="quantitySelector">Quantidade</label>
                                 <input type="tel" step="1" class="form-control text-center" value="1"
-                                    id="quantitySelector" onkeypress="return event.charCode >= 48 && event.charCode <=57">
+                                    id="quantitySelector" onkeypress="return event.charCode >= 48 && event.charCode <=57"
+                                    min="0">
                             </div>
 
                             <div class="col-5">
@@ -63,7 +64,8 @@
                             </div>
                             <div class="col-3">
                                 <label for="priceSelector">Valor Unitário</label>
-                                <input type="number" step="0.01" class="form-control text-center" id="priceSelector">
+                                <input type="number" step="0.01" class="form-control text-center" id="priceSelector"
+                                    min="0">
                             </div>
                             <div class="col-2">
                                 <button type="button" class="btn btn-outline-secondary btn-sm btn-block"
@@ -154,13 +156,13 @@
             if (!productSelector.value || !priceSelector.value || !quantitySelector) return;
             const newTr = document.createElement('tr');
             newTr.id = randomId;
-            newTr.innerHTML = `<input type="hidden" value="${productSelector.value}" name="product_id[]" disabled>
+            newTr.innerHTML = `<input type="hidden" value="${productSelector.value}" name="product_id[]">
                                 <td><input type="text" step="1" class="form-control text-center" value="${quantitySelector.value}"
-                                        name="product_quantity[]" id="${randomId}_productQuantity" onChange="updateProductTotal(${randomId})"
+                                        name="product_quantity[]" id="${randomId}_productQuantity" min="0" onChange="updateProductTotal(${randomId})"
                                         onkeypress="return event.charCode >= 48 && event.charCode <=57" required></td>
                                 <td><input type="text" class="form-control" name="product_title[]" value="${productSelector.options[productSelector.selectedIndex].text}"></td>
                                 <td><input type="number" step="0.01" class="form-control text-center" value="${priceSelector.value}"
-                                        name="product_price[]" id="${randomId}_productPrice" onChange="updateProductTotal(${randomId})" required></td>
+                                        name="product_price[]" id="${randomId}_productPrice" onChange="updateProductTotal(${randomId})" min="0" required></td>
                                 <td><input type="text" class="form-control text-center totalCounter" value="${Math.round(priceSelector.value * quantitySelector.value * 100) / 100}"
                                         disabled id="${randomId}_productTotal">
                                 </td>
