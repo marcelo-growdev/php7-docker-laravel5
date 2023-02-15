@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NewOrder extends Mailable
+class NewOrderEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -30,6 +30,8 @@ class NewOrder extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        $this->subject("Novo pedido gerado");
+        $this->to($this->order->seller->email, $this->order->seller->name);
+        return $this->markdown('emails.orders.created', ['order' => $this->order]);
     }
 }

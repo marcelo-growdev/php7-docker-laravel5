@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\NewOrderEvent;
+use App\Jobs\SendEmailNewOrder;
 use App\Order;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,5 +30,6 @@ class CountOrder
     public function handle(NewOrderEvent $event)
     {
         Log::info('Nova order criada, com ID ' . $event->order->id . ' pelo usuário ' . $event->order->seller->name);
+        SendEmailNewOrder::dispatch($event->order);
     }
 }
